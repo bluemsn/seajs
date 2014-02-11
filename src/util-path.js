@@ -4,22 +4,24 @@
 
 var DIRNAME_RE = /[^?#]*\//
 
-var DOT_RE = /\/\.\//g
+var DOT_RE = /\/\.\//g   // --->   /./  ----
 var DOUBLE_DOT_RE = /\/[^/]+\/\.\.\//
 var DOUBLE_SLASH_RE = /([^:/])\/\//g
 
 // Extract the directory portion of a path
 // dirname("a/b/c.js?t=123#xx/zz") ==> "a/b/"
 // ref: http://jsperf.com/regex-vs-split/2
+
 function dirname(path) {
-  return path.match(DIRNAME_RE)[0]
-}
+  s =  path.match(DIRNAME_RE)
+  return s ? s[0] : ('.' + '/');
+} 
 
 // Canonicalize a path
 // realpath("http://test.com/a//./b/../c") ==> "http://test.com/a/c"
 function realpath(path) {
   // /a/b/./c/./d ==> /a/b/c/d
-  path = path.replace(DOT_RE, "/")
+  path = path.replace(DOT_RE, "/")    //[  /./ ===> /  ]
 
   // a/b/c/../../d  ==>  a/b/../d  ==>  a/d
   while (path.match(DOUBLE_DOT_RE)) {
